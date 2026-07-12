@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ledgerly.local/schemas/audit-event.schema.json",
+  "title": "AuditEvent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "organization_id", "event_type", "entity_type", "entity_id", "actor_type", "occurred_at", "reason", "policy_version"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "organization_id": {"type": "string", "minLength": 1},
+    "event_type": {"type": "string", "minLength": 1},
+    "entity_type": {"type": "string", "minLength": 1},
+    "entity_id": {"type": "string", "minLength": 1},
+    "actor_type": {"enum": ["user", "rule", "model", "system", "integration"]},
+    "actor_id": {"type": ["string", "null"]},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "reason": {"type": "string", "minLength": 1},
+    "before": {"type": ["object", "null"]},
+    "after": {"type": ["object", "null"]},
+    "evidence_references": {"type": "array", "items": {"type": "string"}},
+    "policy_version": {"type": "string", "minLength": 1}
+  }
+}

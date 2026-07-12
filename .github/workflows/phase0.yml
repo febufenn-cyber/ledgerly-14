@@ -1,0 +1,29 @@
+name: Phase 0 constitution checks
+
+on:
+  pull_request:
+    paths:
+      - "docs/phase-0/**"
+      - "docs/adr/**"
+      - "schemas/**"
+      - "fixtures/phase-0/**"
+      - "evals/phase-0/**"
+      - "reviews/phase-0/**"
+      - "scripts/validate_phase0.py"
+      - "phase-0-manifest.json"
+      - ".github/workflows/phase0.yml"
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 scripts/validate_phase0.py

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ledgerly.local/schemas/transaction.schema.json",
+  "title": "NormalizedTransaction",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "organization_id", "source_import_id", "source_row_id", "account_id", "posted_date", "description_original", "amount_minor", "currency", "direction", "source_type", "fingerprint", "status"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "organization_id": {"type": "string", "minLength": 1},
+    "source_import_id": {"type": "string", "minLength": 1},
+    "source_row_id": {"type": "string", "minLength": 1},
+    "account_id": {"type": "string", "minLength": 1},
+    "posted_date": {"type": "string", "format": "date"},
+    "transaction_date": {"type": ["string", "null"], "format": "date"},
+    "description_original": {"type": "string"},
+    "description_normalized": {"type": ["string", "null"]},
+    "amount_minor": {"type": "integer", "minimum": 0},
+    "currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
+    "direction": {"enum": ["debit", "credit"]},
+    "counterparty_raw": {"type": ["string", "null"]},
+    "counterparty_normalized": {"type": ["string", "null"]},
+    "external_reference": {"type": ["string", "null"]},
+    "source_type": {"enum": ["bank_csv", "stripe_csv", "razorpay_csv", "manual"]},
+    "fingerprint": {"type": "string", "minLength": 16},
+    "status": {"enum": ["normalized", "potential_duplicate", "confirmed_duplicate", "needs_mapping", "needs_review", "rejected"]}
+  }
+}
