@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ledgerly.local/schemas/classification-decision.schema.json",
+  "title": "ClassificationDecision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "organization_id", "transaction_id", "canonical_category", "confidence_band", "evidence", "requires_founder_review", "requires_accountant_review", "status", "decision_source", "policy_version"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "organization_id": {"type": "string", "minLength": 1},
+    "transaction_id": {"type": "string", "minLength": 1},
+    "canonical_category": {"type": ["string", "null"]},
+    "customer_account_id": {"type": ["string", "null"]},
+    "confidence_band": {"enum": ["unknown", "low", "medium", "high", "automation_eligible"]},
+    "evidence": {"type": "array", "items": {"type": "object", "required": ["type"], "properties": {"type": {"type": "string"}, "reference": {"type": ["string", "null"]}, "summary": {"type": ["string", "null"]}}, "additionalProperties": false}},
+    "alternatives": {"type": "array", "items": {"type": "string"}},
+    "requires_founder_review": {"type": "boolean"},
+    "requires_accountant_review": {"type": "boolean"},
+    "status": {"enum": ["suggested", "approved", "corrected", "rejected", "unresolved", "superseded"]},
+    "decision_source": {"enum": ["rule", "history", "ai", "founder", "accountant"]},
+    "rule_id": {"type": ["string", "null"]},
+    "model_version": {"type": ["string", "null"]},
+    "prompt_version": {"type": ["string", "null"]},
+    "policy_version": {"type": "string", "minLength": 1}
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "phase": "0",
+  "name": "Accounting Constitution",
+  "status": "implemented_pending_external_review",
+  "required_files": [
+    "docs/phase-0/PHASE-0-CHARTER.md",
+    "docs/phase-0/ACCOUNTING-CONSTITUTION.md",
+    "docs/phase-0/IDEAL-CUSTOMER-AND-PROMISE.md",
+    "docs/phase-0/SUPPORTED-SCENARIOS.md",
+    "docs/phase-0/TRANSACTION-ONTOLOGY.md",
+    "docs/phase-0/RULES-CONFIDENCE-AUTOMATION.md",
+    "docs/phase-0/ROLES-AND-UX.md",
+    "docs/phase-0/THREAT-MODEL.md",
+    "docs/phase-0/EVALUATION-PLAN.md",
+    "docs/phase-0/GO-NO-GO.md",
+    "docs/phase-0/DECISION-LOG.md",
+    "schemas/transaction.schema.json",
+    "schemas/classification-decision.schema.json",
+    "schemas/audit-event.schema.json",
+    "schemas/canonical-categories.json",
+    "fixtures/phase-0/bank-edge-cases.csv",
+    "fixtures/phase-0/expected-results.jsonl",
+    "fixtures/phase-0/supported-scenarios.csv",
+    "reviews/phase-0/ACCOUNTANT-RED-TEAM-TEMPLATE.md",
+    "scripts/validate_phase0.py"
+  ],
+  "external_gates": [
+    "accountant_red_team_completed",
+    "two_founder_walkthroughs_completed",
+    "unsupported_boundary_confirmed",
+    "phase_1_spec_approved"
+  ]
+}

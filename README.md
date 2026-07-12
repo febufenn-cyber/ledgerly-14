@@ -1,42 +1,58 @@
 # Ledgerly
 
-> an AI categorization co-pilot that labels bank and Stripe transactions and drafts month-end journal entries for micro-businesses.
+> An India-first month-end close co-pilot that turns bank and payment feeds into a reconciled, explainable, accountant-ready review package.
 
-**Alternative to the product-shape pioneered by Truewind (YC W23)** — rank #14 of 500 in the [YC-500 Fable 5 Venture Blueprint](https://github.com/) (score 7.15/10).
+Ledgerly is intentionally **not** an autonomous accountant. It preserves source evidence, applies deterministic rules before AI, keeps uncertainty visible, and requires human review for high-risk accounting decisions.
 
-## Why this exists
-Bookkeeping is high-volume, repetitive, and perfect for AI leverage The buildable wedge: transaction categorization co-pilot fed by bank/stripe feeds.
+## Current status
 
-## MVP scope
-- [ ] Import bank/Stripe CSV
-- [ ] AI categorize
-- [ ] learn corrections
-- [ ] monthly summary
-- [ ] export to Xero/QBO
+**Phase 0 — Accounting Constitution** is implemented on this branch. Phase 0 locks the product boundary, accounting invariants, transaction ontology, correction policy, confidence ladder, threat model, evaluation fixtures, and go/no-go gates before production ingestion begins.
 
-## Architecture
-`Workers+Supabase+Claude` — Cloudflare Workers + Hono API, Supabase (Postgres + RLS + Auth + pgvector), Claude API via Agent SDK (claude-fable-5 for agent reasoning, claude-haiku-4-5 for volume), wrangler deploys.
+Start here:
 
-**Integrations:** Plaid/CSV; Stripe; QuickBooks/Xero
-**Data:** Transactions; category rules; corrections
-**Agent core:** Agent categorizes transactions and asks only about ambiguous ones
+- [`docs/phase-0/PHASE-0-CHARTER.md`](docs/phase-0/PHASE-0-CHARTER.md)
+- [`docs/phase-0/ACCOUNTING-CONSTITUTION.md`](docs/phase-0/ACCOUNTING-CONSTITUTION.md)
+- [`docs/phase-0/GO-NO-GO.md`](docs/phase-0/GO-NO-GO.md)
+- [`phase-0-manifest.json`](phase-0-manifest.json)
 
-## Business
-| | |
-|---|---|
-| Monetization | Monthly SaaS per entity |
-| First customer | Solo founders doing own books |
-| GTM wedge | Founder communities; 'bookkeeping for startups' SEO |
-| Competition risk | High: Truewind, Puzzle, QBO |
-| Regulatory/trust risk | Med: accounting accuracy |
-| India angle | Tally/Zoho Books export; Indian expense heads |
-| Difficulty / build time | Medium / 2-3 weeks |
+Run the Phase 0 checks:
 
-## 30-day plan
-- **W1:** core loop — Import bank/Stripe CSV + AI categorize
-- **W2:** learn corrections + monthly summary + export to Xero/QBO + auth + billing
-- **W3:** polish, instrument events, seed first users via: Founder communities; 'bookkeeping for startups' SEO
-- **W4:** launch + first revenue; kill/scale decision
+```bash
+python3 scripts/validate_phase0.py
+```
 
----
-*Built with Fable 5 (Claude Code). Blueprint row: inspired by Truewind — "AI-powered bookkeeping and month-end close for startups"*
+## Opening customer
+
+Indian service businesses, agencies, consultants, and small SaaS companies with:
+
+- one legal entity;
+- INR as the primary functional currency;
+- no inventory-heavy accounting;
+- approximately 100–1,000 monthly transactions;
+- bank CSV plus Stripe or Razorpay activity;
+- an existing founder reviewer and accountant/CA.
+
+## Product promise
+
+Ledgerly imports and normalizes transaction evidence, identifies repeated patterns, asks only for missing business context, reconciles related movements, and prepares a review package for the founder and accountant.
+
+It does **not** file taxes, replace a CA, silently alter closed periods, invent balancing entries, or directly post uncertain AI output.
+
+## Phased roadmap
+
+1. **Phase 0:** Accounting constitution and risk boundaries.
+2. **Phase 1:** Trustworthy CSV ingestion and normalization.
+3. **Phase 2:** Deterministic rules and correction memory.
+4. **Phase 3:** Structured AI ambiguity resolution.
+5. **Phase 4:** Exception-review cockpit.
+6. **Phase 5:** Settlement graph and reconciliation.
+7. **Phase 6:** Month-end close package.
+8. **Phase 7:** Safe Zoho Books, Tally, and accountant exports.
+9. **Phase 8:** Paid pilots and accountant validation.
+10. **Phase 9:** Controlled, transaction-class-specific autonomy.
+
+## Architecture direction
+
+Cloudflare Workers + Hono, Supabase Postgres/Auth/RLS, private object storage, deterministic normalization and relationship services, and a structured AI suggestion service behind accounting policy gates.
+
+The model provider is replaceable. The durable asset is each entity’s verified accounting memory graph: source evidence, accepted decisions, accountant overrides, rules, mappings, and reconciliation relationships.
