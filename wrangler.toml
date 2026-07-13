@@ -1,0 +1,13 @@
+name = "ledgerly"
+main = "src/index.ts"
+compatibility_date = "2026-07-13"
+compatibility_flags = ["nodejs_compat"]
+
+[[r2_buckets]]
+binding = "SOURCES"
+bucket_name = "ledgerly-sources"
+preview_bucket_name = "ledgerly-sources-preview"
+
+[vars]
+SOURCE_BUCKET_NAME = "ledgerly-sources"
+MAX_UPLOAD_BYTES = "10485760"
