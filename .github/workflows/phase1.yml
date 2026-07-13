@@ -1,4 +1,4 @@
-name: Phase 1 ingestion checks
+name: Ledgerly phase checks
 
 on:
   pull_request:
@@ -7,6 +7,7 @@ on:
       - "tests/**"
       - "supabase/**"
       - "docs/phase-1/**"
+      - "docs/phase-2/**"
       - "package.json"
       - "package-lock.json"
       - "tsconfig.json"
