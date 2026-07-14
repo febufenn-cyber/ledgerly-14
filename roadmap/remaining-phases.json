@@ -1,0 +1,317 @@
+{
+  "version": "1.0.0",
+  "default_branch": "main",
+  "current_repository_phase": 2,
+  "remaining_phase_count": 7,
+  "build_trigger": {
+    "default_command": "BUILD",
+    "default_behavior": "Execute the next phase whose repository_status is not implemented.",
+    "targeted_command": "BUILD PHASE N",
+    "targeted_behavior": "Execute Phase N only after all repository dependencies are implemented."
+  },
+  "merge_policy": {
+    "branch_pattern": "agent/phaseN-<slice>",
+    "merge_method": "squash",
+    "required_before_merge": [
+      "diff inspected",
+      "typecheck passed",
+      "tests passed",
+      "roadmap validator passed",
+      "required GitHub Actions checks passed"
+    ],
+    "final_confirmation": [
+      "PR links",
+      "merge SHAs in order",
+      "CI evidence",
+      "latest main verification",
+      "implemented boundary",
+      "remaining external production gates"
+    ]
+  },
+  "phases": [
+    {
+      "number": 3,
+      "slug": "structured-ai-ambiguity-engine",
+      "name": "Structured AI Ambiguity Engine",
+      "repository_status": "planned",
+      "production_status": "blocked_by_external_gates",
+      "depends_on": [0, 1, 2],
+      "objective": "Produce provider-neutral, evidence-bound structured suggestions for transactions deterministic rules cannot resolve.",
+      "slices": [
+        "Specification, model contracts, threat model, and frozen evaluation corpus",
+        "Model-run persistence, RLS, privacy minimization, budgets, and policy gates",
+        "Suggestion service, idempotency, failure fallback, and queue integration",
+        "Evaluation harness, regression gates, diagnostics, and authenticated API"
+      ],
+      "preflight": [
+        "Verify Phase 2 commits and migrations are present on main",
+        "Run existing typecheck, tests, Phase 0 validator, and roadmap validator",
+        "Confirm canonical category and account-mapping contracts remain authoritative",
+        "Create phase-specific specification and go-no-go documents before implementation code"
+      ],
+      "hard_invariants": [
+        "AI output is suggestion-only and cannot approve, post, or create a future rule",
+        "Imported text is untrusted data and never instruction authority",
+        "Every evidence reference must resolve to authorized stored evidence",
+        "Provider failure leaves the transaction unresolved",
+        "Model, prompt, policy, and evidence versions are persisted"
+      ],
+      "acceptance": [
+        "100 percent schema-valid persisted suggestions",
+        "100 percent valid authorized evidence references",
+        "Prompt-injection fixtures cannot invoke actions or alter system policy",
+        "High-confidence precision target at least 98 percent before production activation",
+        "Unsupported and high-risk escalation recall at least 99 percent before production activation"
+      ],
+      "external_gates": [
+        "Provider credentials configured outside the repository",
+        "Accountant-reviewed frozen corpus",
+        "Provider privacy and retention review",
+        "Non-production cost and latency approval"
+      ]
+    },
+    {
+      "number": 4,
+      "slug": "exception-review-cockpit",
+      "name": "Exception-Review Cockpit",
+      "repository_status": "planned",
+      "production_status": "blocked_by_external_gates",
+      "depends_on": [0, 1, 2, 3],
+      "objective": "Create a fast and safe founder/accountant review experience centered on visible exceptions and source evidence.",
+      "slices": [
+        "Queue, grouping, cursor, version, and role contracts",
+        "Responsive accessible web application foundation",
+        "Approve, correct, route, group action, concurrency, and undo workflows",
+        "Browser end-to-end, performance, accessibility, and privacy-safe telemetry hardening"
+      ],
+      "preflight": [
+        "Verify Phase 3 is implemented on main",
+        "Run all validators and current test suites",
+        "Create phase-specific UX, API, threat, and go-no-go documents",
+        "Confirm unresolved states and original evidence are available through backend contracts"
+      ],
+      "hard_invariants": [
+        "No unresolved item may be hidden by grouping, filtering, or report generation",
+        "Group actions must preview every affected transaction",
+        "Stale-version and cross-role collisions must fail safely",
+        "Undo preserves append-only audit history",
+        "Original source evidence remains visible"
+      ],
+      "acceptance": [
+        "Every queue item displays evidence, current decision, suggestion source, and review reason",
+        "Group actions cannot cross organizations or incompatible risk boundaries",
+        "Undo restores current state without deleting history",
+        "Synthetic 100 and 1000 transaction sessions pass browser end-to-end tests",
+        "External target is 100 ordinary transactions reviewed within 10 to 15 minutes"
+      ],
+      "external_gates": [
+        "Two founder usability walkthroughs",
+        "Accountant workflow review",
+        "Keyboard and assistive-technology accessibility review"
+      ]
+    },
+    {
+      "number": 5,
+      "slug": "relationship-graph-reconciliation",
+      "name": "Relationship Graph and Reconciliation",
+      "repository_status": "planned",
+      "production_status": "blocked_by_external_gates",
+      "depends_on": [0, 1, 2, 3, 4],
+      "objective": "Tie transfers, processor charges, fees, refunds, disputes, and payouts into an explainable graph without double-counting.",
+      "slices": [
+        "Financial-event, component, relationship, settlement, and reconciliation persistence",
+        "Internal-transfer exact and candidate matching engine",
+        "Stripe and Razorpay CSV adapters and payout decomposition",
+        "Reconciliation arithmetic, unmatched queue, explanation API, and UI"
+      ],
+      "preflight": [
+        "Verify Phases 3 and 4 are implemented on main",
+        "Run all validators and current tests",
+        "Create relationship ontology, adapter contracts, threat model, and go-no-go documents",
+        "Confirm source evidence and review decisions remain immutable"
+      ],
+      "hard_invariants": [
+        "Internal transfers never become income or expense merely from matching",
+        "The system never invents balancing plugs",
+        "Every relationship traces to source evidence and a recorded decision",
+        "Reconciliation reruns are idempotent",
+        "Unmatched and partially matched states remain visible"
+      ],
+      "acceptance": [
+        "Processor revenue is not double-counted between processor and bank feeds",
+        "Exact settlement fixtures reconcile to zero",
+        "Missing components produce a visible reconciliation difference",
+        "Internal transfer fixtures create no income or expense",
+        "Reruns do not duplicate relationships or components"
+      ],
+      "external_gates": [
+        "Permissioned Stripe and Razorpay settlement samples",
+        "Accountant review of fee, refund, dispute, and payout treatment",
+        "Live provider credentials only after CSV behavior is stable"
+      ]
+    },
+    {
+      "number": 6,
+      "slug": "month-end-close-journal-drafts",
+      "name": "Month-End Close and Journal Drafts",
+      "repository_status": "planned",
+      "production_status": "blocked_by_external_gates",
+      "depends_on": [0, 1, 2, 3, 4, 5],
+      "objective": "Create period readiness, accountant-ready close packages, balanced journal drafts, and protected locked periods.",
+      "slices": [
+        "Close-period state machine, reviewers, blockers, snapshots, and locks",
+        "Readiness checks for unresolved, unreconciled, duplicate, and high-risk items",
+        "Close package reports and deterministic snapshot generation",
+        "Balanced journal draft persistence, approval, supersession, and audit enforcement"
+      ],
+      "preflight": [
+        "Verify Phase 5 is implemented on main",
+        "Run all validators and current tests",
+        "Create close-state, journal, reporting, and go-no-go documents",
+        "Confirm reconciliation results and classification decisions are versioned inputs"
+      ],
+      "hard_invariants": [
+        "It is structurally impossible to approve or export an unbalanced journal draft",
+        "Locked periods reject silent edits, model reruns, and rule reapplication",
+        "Every journal line traces to authorized source evidence",
+        "Readiness cannot be green while blocking exceptions remain",
+        "Reopening requires an authorized actor and reason"
+      ],
+      "acceptance": [
+        "Balanced-journal database and API tests pass",
+        "Locked-period mutation tests fail safely",
+        "Close package regeneration from the same snapshot is deterministic",
+        "Every blocker count reconciles to underlying records",
+        "Every journal line resolves to source transaction or component evidence"
+      ],
+      "external_gates": [
+        "Accountant review of close package and journal representation",
+        "Three representative month-end fixture sets",
+        "Product and legal review of draft-versus-final wording"
+      ]
+    },
+    {
+      "number": 7,
+      "slug": "safe-exports-integrations",
+      "name": "Safe Exports and Integrations",
+      "repository_status": "planned",
+      "production_status": "blocked_by_external_gates",
+      "depends_on": [0, 1, 2, 3, 4, 5, 6],
+      "objective": "Export approved period snapshots through previewable, traceable, and idempotent accountant and accounting-system formats.",
+      "slices": [
+        "Export profiles, mappings, dry runs, manifests, status machine, and idempotency",
+        "Formula-safe accountant CSV and XLSX packages",
+        "Zoho Books and Tally-compatible export adapters",
+        "Optional current Xero and QuickBooks connectors with OAuth and sandbox tests"
+      ],
+      "preflight": [
+        "Verify Phase 6 is implemented on main",
+        "Run all validators and current tests",
+        "Verify current provider APIs from primary documentation at implementation time",
+        "Create export contracts, credential threat model, and go-no-go documents"
+      ],
+      "hard_invariants": [
+        "Every export has a permanent manifest and idempotency key",
+        "Retrying an export cannot create duplicate destination entries",
+        "Missing mappings block final export",
+        "Spreadsheet output neutralizes formula execution",
+        "Connector failure cannot mutate Ledgerly approval state"
+      ],
+      "acceptance": [
+        "Dry-run output exactly identifies generated or outbound records",
+        "Repeated export tests produce no duplicates",
+        "Every destination record stores its source snapshot and destination identifier",
+        "Missing and invalid mappings remain visible",
+        "Round-trip fixtures preserve approved amounts and categories"
+      ],
+      "external_gates": [
+        "Current API and terms review for each provider",
+        "Sandbox credentials and round-trip tests",
+        "Accountant validation of Zoho Books and Tally mappings"
+      ]
+    },
+    {
+      "number": 8,
+      "slug": "pilot-hardening-operational-readiness",
+      "name": "Pilot Hardening and Operational Readiness",
+      "repository_status": "planned",
+      "production_status": "blocked_by_external_gates",
+      "depends_on": [0, 1, 2, 3, 4, 5, 6, 7],
+      "objective": "Make Ledgerly observable, supportable, privacy-operable, resilient, and measurable for controlled pilots.",
+      "slices": [
+        "Privacy-safe metrics, traces, dashboards, alerts, and provider-cost telemetry",
+        "Data export, deletion, retention, membership, credential, and audit operations",
+        "Load, failure-injection, RLS, concurrency, rate-limit, rollback, and runbook hardening",
+        "Pilot enrollment, feature flags, support tooling, feedback, and success-metric reports"
+      ],
+      "preflight": [
+        "Verify Phase 7 is implemented on main",
+        "Run all validators and current tests",
+        "Create operational SLO, privacy, incident, pilot, and go-no-go documents",
+        "Confirm metrics exclude prohibited raw financial content"
+      ],
+      "hard_invariants": [
+        "Operational logs and metrics contain no prohibited raw financial data",
+        "Failure injection creates no partial active financial state",
+        "Support tooling obeys tenant and role isolation",
+        "Destructive privacy operations are authorized, manifested, and audited",
+        "Repository completion is not represented as completed external pilots"
+      ],
+      "acceptance": [
+        "Live non-production role and cross-tenant matrices pass",
+        "Deletion and data-export workflows produce testable manifests",
+        "Provider and database failure runbooks are exercised with fixtures",
+        "Load and concurrency tests remain within documented budgets",
+        "Critical alert paths identify detection, containment, recovery, and verification"
+      ],
+      "external_gates": [
+        "Five in-scope pilot businesses",
+        "One or two accounting partners",
+        "Three consecutive close cycles",
+        "Measured review time, corrections, reconciliation differences, export failures, and retention",
+        "Security and privacy review plus incident-response rehearsal"
+      ]
+    },
+    {
+      "number": 9,
+      "slug": "controlled-autonomy",
+      "name": "Controlled Autonomy",
+      "repository_status": "planned",
+      "production_status": "blocked_by_external_gates",
+      "depends_on": [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      "objective": "Permit narrow low-risk transaction classes to auto-approve only after verified entity history, shadow-mode evidence, explicit consent, and revocation controls.",
+      "slices": [
+        "Entity and transaction-class automation policy persistence",
+        "Eligibility engine using accepted history, stability, risk, conflicts, and calibrated precision",
+        "Shadow-mode simulation and human-outcome comparison",
+        "Controlled activation, limits, drift monitoring, suspension, rollback, and kill switches"
+      ],
+      "preflight": [
+        "Verify Phase 8 repository implementation is on main",
+        "Run all validators and current tests",
+        "Create autonomy policy, eligibility, shadow-mode, incident, and go-no-go documents",
+        "Confirm external pilot evidence is explicitly available or leave production activation blocked"
+      ],
+      "hard_invariants": [
+        "There is no global autopilot; autonomy is per entity and transaction class",
+        "High-risk owner, personal, loan, asset, tax, statutory, related-party, and complex-FX classes are never eligible",
+        "Every automated decision records policy, evidence, eligibility, consent, and version history",
+        "A kill switch immediately stops new automatic decisions",
+        "Corrections trigger class review or suspension"
+      ],
+      "acceptance": [
+        "Shadow-mode comparison is available before activation",
+        "Ineligible high-risk fixtures never auto-approve",
+        "Explicit organization consent is required per class",
+        "Drift or correction thresholds automatically suspend affected policies",
+        "Rollback and supersession preserve complete audit history"
+      ],
+      "external_gates": [
+        "Accountant-approved automation classes",
+        "Sufficient live accepted history per entity and class",
+        "Multiple close cycles of shadow-mode observation",
+        "Explicit customer consent and tested reversal/support process"
+      ]
+    }
+  ]
+}
