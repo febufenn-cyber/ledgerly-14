@@ -7,12 +7,15 @@
 - **Phase 0:** accounting constitution, risk boundaries, schemas, and evaluation policy.
 - **Phase 1:** trustworthy CSV ingestion and normalization backend.
 - **Phase 2:** deterministic categorization rules and correction memory.
+- **Phase 3:** provider-neutral, evidence-bound AI ambiguity suggestions.
 
 Phase 1 provides a Cloudflare Worker/Hono API, Supabase Auth/Postgres/RLS schema, private R2 source storage, deterministic CSV detection and normalization, duplicate-safe staging, atomic commit RPCs, import manifests, and audit events.
 
-Phase 2 adds canonical categories, organization account mappings, entity-scoped structured rules, deterministic suggestions, conflict detection, review queues, explicit correction scopes, append-only decision history, and disableable correction-generated memory. It performs no model calls and does not auto-approve suggestions.
+Phase 2 adds canonical categories, organization account mappings, entity-scoped structured rules, deterministic suggestions, conflict detection, review queues, explicit correction scopes, append-only decision history, and disableable correction-generated memory.
 
-Seven repository phases remain: structured AI ambiguity, the exception-review cockpit, reconciliation, month-end close, safe exports, pilot hardening, and controlled autonomy.
+Phase 3 adds strict AI input/output contracts, organization opt-in, budgets/timeouts/retries/circuit state, RLS-protected model runs, evidence and category policy gates, idempotent provider-neutral execution, fail-closed unresolved fallback, a deterministic fake provider, authenticated policy/run/diagnostic APIs, and regression metrics. It never auto-approves or creates rules.
+
+Six repository phases remain: the exception-review cockpit, reconciliation, month-end close, safe exports, pilot hardening, and controlled autonomy.
 
 ```bash
 npm install --ignore-scripts
@@ -24,38 +27,35 @@ Read:
 
 - [`docs/phase-0/ACCOUNTING-CONSTITUTION.md`](docs/phase-0/ACCOUNTING-CONSTITUTION.md)
 - [`docs/phase-1/PHASE-1-SPEC.md`](docs/phase-1/PHASE-1-SPEC.md)
-- [`docs/phase-1/API.md`](docs/phase-1/API.md)
 - [`docs/phase-2/PHASE-2-SPEC.md`](docs/phase-2/PHASE-2-SPEC.md)
-- [`docs/phase-2/API.md`](docs/phase-2/API.md)
-- [`docs/phase-2/GO-NO-GO.md`](docs/phase-2/GO-NO-GO.md)
+- [`docs/phase-3/PHASE-3-SPEC.md`](docs/phase-3/PHASE-3-SPEC.md)
+- [`docs/phase-3/API.md`](docs/phase-3/API.md)
+- [`docs/phase-3/GO-NO-GO.md`](docs/phase-3/GO-NO-GO.md)
 - [`docs/roadmap/AUTONOMOUS-BUILD-PLAYBOOK.md`](docs/roadmap/AUTONOMOUS-BUILD-PLAYBOOK.md)
 - [`roadmap/remaining-phases.json`](roadmap/remaining-phases.json)
 
 ## Future build command
 
-`BUILD` means: validate the roadmap, choose the next incomplete phase, create its phase-specific specification, implement it through green dependency-ordered PRs, squash-merge each PR into `main`, verify the final main commit, update the roadmap, and report the merge evidence and remaining external production gates.
+`BUILD` validates the roadmap, chooses the next incomplete phase, implements it through green dependency-ordered PRs, squash-merges each PR into `main`, updates the roadmap, verifies the final main commit, and reports merge evidence and remaining external gates.
 
-`BUILD PHASE N` targets a named phase but still refuses to skip incomplete repository dependencies.
+`BUILD PHASE N` targets a named phase but refuses to skip incomplete repository dependencies.
 
-Repository implementation and production activation are separate claims. Provider credentials, live RLS tests, accountant reviews, real pilots, and shadow-mode evidence remain external gates where documented.
+Repository implementation and production activation are separate claims. Live provider credentials, live RLS tests, accountant reviews, real pilots, and shadow-mode evidence remain external gates where documented.
 
 ## Core pipeline
 
 ```text
 private content-addressed source file
   → immutable raw rows
-  → versioned parsing attempt
-  → deterministic normalization
-  → duplicate assessment
-  → atomic commit
-  → active normalized movements
-  → entity-scoped rule evaluation
-  → explainable suggestion / visible conflict / unresolved
-  → human approval or scoped correction
+  → deterministic normalization and duplicate-safe commit
+  → entity-scoped deterministic rule evaluation
+  → unresolved / visible conflict
+  → minimized evidence-bound AI suggestion or safe unresolved fallback
+  → human approval or explicitly scoped correction
   → append-only accounting memory
 ```
 
-Ledgerly does not yet call an AI categorization model, file tax, generate journals, or post to accounting systems.
+Ledgerly does not yet provide the review cockpit, reconcile settlements, close periods, generate journal drafts, export to accounting systems, or enable autonomy.
 
 ## Development
 
