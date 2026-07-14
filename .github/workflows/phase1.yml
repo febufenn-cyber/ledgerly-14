@@ -8,6 +8,9 @@ on:
       - "supabase/**"
       - "docs/phase-1/**"
       - "docs/phase-2/**"
+      - "docs/roadmap/**"
+      - "roadmap/**"
+      - "scripts/validate_build_plan.py"
       - "package.json"
       - "package-lock.json"
       - "tsconfig.json"
@@ -35,3 +38,4 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: python3 scripts/validate_phase0.py
+      - run: python3 scripts/validate_build_plan.py
