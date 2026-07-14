@@ -33,6 +33,10 @@ interface RunRow {
 }
 
 interface SuggestionRow {
+  id?: string
+  organization_id?: string
+  normalized_transaction_id?: string
+  model_run_id?: string
   outcome: AiSuggestionOutput['outcome']
   canonical_category_code: string | null
   confidence_band: AiSuggestionOutput['confidenceBand']
@@ -43,10 +47,103 @@ interface SuggestionRow {
   requires_founder_review: true
   requires_accountant_review: boolean
   explanation: string
+  created_at?: string
+}
+
+export interface AiPolicyRecord {
+  organization_id: string
+  enabled: boolean
+  provider: string
+  model: string
+  prompt_version: string
+  policy_version: string
+  schema_version: string
+  monthly_budget_minor: number
+  timeout_ms: number
+  retry_limit: number
+  circuit_state: 'closed' | 'open' | 'half_open'
+  updated_at: string
+}
+
+export interface AiRunDiagnostic {
+  id: string
+  organization_id: string
+  normalized_transaction_id: string
+  status: string
+  provider: string
+  model: string
+  prompt_version: string
+  policy_version: string
+  schema_version: string
+  error_code: string | null
+  input_tokens: number | null
+  output_tokens: number | null
+  estimated_cost_minor: number | null
+  latency_ms: number | null
+  created_at: string
+  completed_at: string | null
 }
 
 export class AiRepository implements AiRepositoryPort {
   constructor(private readonly db: SupabaseRestClient) {}
+
+  async configurePolicy(input: {
+    organizationId: string
+    enabled: boolean
+    provider: string
+    model: string
+    promptVersion: string
+    policyVersion: string
+    schemaVersion: string
+    monthlyBudgetMinor: number
+    timeoutMs: number
+    retryLimit: number
+  }): Promise<unknown> {
+    return this.db.rpc('configure_ai_policy', {
+      p_organization_id: input.organizationId,
+      p_enabled: input.enabled,
+      p_provider: input.provider,
+      p_model: input.model,
+      p_prompt_version: input.promptVersion,
+      p_policy_version: input.policyVersion,
+      p_schema_version: input.schemaVersion,
+      p_monthly_budget_minor: input.monthlyBudgetMinor,
+      p_timeout_ms: input.timeoutMs,
+      p_retry_limit: input.retryLimit
+    })
+  }
+
+  async getPolicy(organizationId: string): Promise<AiPolicyRecord | null> {
+    const rows = await this.db.table<AiPolicyRecord[]>('organization_ai_policies', {
+      query: { organization_id: `eq.${organizationId}`, select: '*', limit: '1' }
+    })
+    return rows[0] ?? null
+  }
+
+  async listSuggestions(organizationId: string, limit: number): Promise<SuggestionRow[]> {
+    return this.db.table<SuggestionRow[]>('ai_suggestions', {
+      query: {
+        organization_id: `eq.${organizationId}`,
+        is_current: 'eq.true',
+        select: '*',
+        order: 'created_at.desc',
+        limit: String(limit)
+      }
+    })
+  }
+
+  async getRunDiagnostic(runId: string): Promise<AiRunDiagnostic> {
+    const rows = await this.db.table<AiRunDiagnostic[]>('ai_model_runs', {
+      query: {
+        id: `eq.${runId}`,
+        select: 'id,organization_id,normalized_transaction_id,status,provider,model,prompt_version,policy_version,schema_version,error_code,input_tokens,output_tokens,estimated_cost_minor,latency_ms,created_at,completed_at',
+        limit: '1'
+      }
+    })
+    const row = rows[0]
+    if (!row) throw new LedgerlyError('AI_RUN_NOT_FOUND', 'AI run not found', 404)
+    return row
+  }
 
   async getContext(organizationId: string, transactionId: string): Promise<AiExecutionContext> {
     const raw = await this.db.rpc<RawAiContext>('get_ai_policy_context', {
