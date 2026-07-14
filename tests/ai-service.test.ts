@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { AiSuggestionService, minimizeAiInput, type AiRepositoryPort, type AiRunResult } from '../src/domain/ai-service'
+import {
+  AiSuggestionService,
+  minimizeAiInput,
+  type AiExecutionContext,
+  type AiRepositoryPort,
+  type AiRunResult
+} from '../src/domain/ai-service'
 import type { AiSuggestionInput } from '../src/domain/ai-types'
-import { LedgerlyError } from '../src/domain/errors'
 import { FakeAiModelAdapter } from '../src/infra/fake-ai-adapter'
 
 const input: AiSuggestionInput = {
@@ -35,21 +40,23 @@ const input: AiSuggestionInput = {
 }
 
 class MemoryRepository implements AiRepositoryPort {
-  context = {
+  context: AiExecutionContext = {
     input,
     enabled: true,
     provider: 'fake',
     model: 'fixture-v1',
     timeoutMs: 1000,
     retryLimit: 0,
-    circuitState: 'closed' as const
+    circuitState: 'closed'
   }
   beginCount = 0
   completeCount = 0
   lastMinimized: AiSuggestionInput | null = null
   private cachedResult: AiRunResult | null = null
 
-  async getContext() { return this.context }
+  async getContext(_organizationId: string, _transactionId: string): Promise<AiExecutionContext> {
+    return this.context
+  }
 
   async beginRun(value: Parameters<AiRepositoryPort['beginRun']>[0]) {
     this.beginCount += 1
@@ -57,12 +64,12 @@ class MemoryRepository implements AiRepositoryPort {
     return { runId: 'run-1', cached: this.cachedResult !== null }
   }
 
-  async getRunResult() {
+  async getRunResult(_runId: string): Promise<AiRunResult> {
     if (!this.cachedResult) throw new Error('missing result')
     return { ...this.cachedResult, cached: true }
   }
 
-  async completeRun(value: Parameters<AiRepositoryPort['completeRun']>[0]) {
+  async completeRun(value: Parameters<AiRepositoryPort['completeRun']>[0]): Promise<AiRunResult> {
     this.completeCount += 1
     const result: AiRunResult = {
       runId: value.runId,
@@ -133,7 +140,7 @@ describe('AI suggestion service', () => {
     const service = new AiSuggestionService(repository, new FakeAiModelAdapter())
 
     await expect(service.run(input.organizationId, input.transaction.transactionId))
-      .rejects.toMatchObject<Partial<LedgerlyError>>({ code: 'AI_PROVIDER_MISMATCH' })
+      .rejects.toMatchObject({ code: 'AI_PROVIDER_MISMATCH' })
     expect(repository.beginCount).toBe(0)
   })
 
